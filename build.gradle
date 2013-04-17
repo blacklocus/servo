@@ -26,6 +26,8 @@ buildscript {
 }
 
 allprojects {
+    apply plugin: 'idea';
+
     repositories { 
         mavenCentral() // maven { url: 'http://jcenter.bintray.com' }
     }
