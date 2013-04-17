@@ -40,7 +40,7 @@ apply from: file('gradle/license.gradle')
 apply from: file('gradle/release.gradle')
 
 subprojects {
-    group = 'com.netflix.servo' 
+    group = 'com.netflix.servo.blacklocus'
 
     tasks.withType(Compile) { 
         options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation" 
