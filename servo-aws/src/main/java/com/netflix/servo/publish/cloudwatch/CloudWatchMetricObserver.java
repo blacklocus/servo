@@ -154,7 +154,7 @@ public class CloudWatchMetricObserver extends BaseMetricObserver {
 
         while (metrics.size() > 0) {
             Metric m = metrics.remove(0);
-            if (m.hasNumberValue()) {
+            if (m.hasNumberValue() || m.getValue() instanceof StatisticSet) {
                 batch.add(m);
 
                 if (batchCount++ % batchSize == 0) {
