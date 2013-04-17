@@ -154,7 +154,7 @@ public class CloudWatchMetricObserver extends BaseMetricObserver {
 
         while (metrics.size() > 0) {
             Metric m = metrics.remove(0);
-            if (m.hasNumberValue() || m.getValue() instanceof StatisticSet) {
+            if (m.hasNumberValue() || isValidStatisticSet(m.getValue())) {
                 batch.add(m);
 
                 if (batchCount++ % batchSize == 0) {
@@ -167,6 +167,10 @@ public class CloudWatchMetricObserver extends BaseMetricObserver {
         if (!batch.isEmpty()) {
             putMetricData(batch);
         }
+    }
+
+    private boolean isValidStatisticSet(Object value) {
+        return value instanceof StatisticSet && ((StatisticSet) value).getSampleCount() > 0;
     }
 
     private void putMetricData(List<Metric> batch) {
