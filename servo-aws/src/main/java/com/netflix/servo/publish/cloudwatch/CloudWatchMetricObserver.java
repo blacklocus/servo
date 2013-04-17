@@ -17,21 +17,17 @@ package com.netflix.servo.publish.cloudwatch;
 
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSCredentialsProvider;
-
 import com.amazonaws.services.cloudwatch.AmazonCloudWatch;
 import com.amazonaws.services.cloudwatch.AmazonCloudWatchClient;
 import com.amazonaws.services.cloudwatch.model.Dimension;
 import com.amazonaws.services.cloudwatch.model.MetricDatum;
 import com.amazonaws.services.cloudwatch.model.PutMetricDataRequest;
-
+import com.amazonaws.services.cloudwatch.model.StatisticSet;
 import com.google.common.base.Preconditions;
-
+import com.netflix.servo.Metric;
+import com.netflix.servo.publish.BaseMetricObserver;
 import com.netflix.servo.tag.Tag;
 import com.netflix.servo.tag.TagList;
-
-import com.netflix.servo.publish.BaseMetricObserver;
-import com.netflix.servo.Metric;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -193,14 +189,18 @@ public class CloudWatchMetricObserver extends BaseMetricObserver {
     }
 
     MetricDatum createMetricDatum(Metric metric) {
-        MetricDatum metricDatum = new MetricDatum();
-
-        return metricDatum.withMetricName(metric.getConfig().getName())
+        MetricDatum metricDatum = new MetricDatum().withMetricName(metric.getConfig().getName())
                 .withDimensions(createDimensions(metric.getConfig().getTags()))
                 .withUnit("None")//DataSourceTypeToAwsUnit.getUnit(metric.))
-                .withTimestamp(new Date(metric.getTimestamp()))
-                .withValue(truncate(metric.getNumberValue()));
+                .withTimestamp(new Date(metric.getTimestamp()));
         //TODO Need to convert into reasonable units based on DataType
+
+        Object value = metric.getValue();
+        if (value instanceof StatisticSet) {
+            return metricDatum.withStatisticValues((StatisticSet) value);
+        } else {
+            return metricDatum.withValue(truncate(metric.getNumberValue()));
+        }
     }
 
     /**
