@@ -1,4 +1,4 @@
 "See Wiki":https://github.com/Netflix/servo/wiki
 
-[![Build Status](https://netflixoss.ci.cloudbees.com/job/servo-master/badge/icon)](https://netflixoss.ci.cloudbees.com/job/servo-master/)
-
+A fork of servo for my own selfish purposes. Mainly (at the moment), to be able to send batches of measurements
+to CloudWatch as a StatisticSet.
